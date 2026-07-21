@@ -1,4 +1,4 @@
-<h1 align="center">📋 People Manager CLI</h1>
+<h1 align="center">📋 Gerenciador de Usuários CLI</h1>
 
 <p align="center">
   💻 Projeto pessoal em Python para gerenciamento de cadastros <br>
