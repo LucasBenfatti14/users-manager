@@ -26,52 +26,47 @@ ANSI = {
     "sublinhado": "\033[4m"
 }
 
-
-def linha(tam:int = 50) -> None:
+def linha(tam:int=50) -> None:
     print("-" * tam)
-
 
 def titulo(msg:str, tam:int=50) -> None:
     linha(tam)
     print(f"{ANSI['negrito']}{ANSI['bg_ciano']}{msg.center(tam)}{ANSI['reset']}")
     linha(tam)
 
-
 def mostrar_menu() -> None:
     limpar_terminal()
     titulo("MENU PRINCIPAL")
+    print(f"{ANSI['bg_vermelho']} 0 {ANSI['reset']} - {ANSI['negrito']}Sair do sistema{ANSI['reset']}")
     print(f"{ANSI['bg_azul']} 1 {ANSI['reset']} - {ANSI['negrito']}Ver pessoas cadastradas{ANSI['reset']}")
     print(f"{ANSI['bg_verde']} 2 {ANSI['reset']} - {ANSI['negrito']}Cadastrar nova pessoa{ANSI['reset']}")
-    print(f"{ANSI['bg_vermelho']} 3 {ANSI['reset']} - {ANSI['negrito']}Sair do sistema{ANSI['reset']}")
+    print(f"{ANSI['bg_amarelo']} 3 {ANSI['reset']} - {ANSI['negrito']}Buscar cadastro de uma pessoa{ANSI['reset']}")
+    print(f"{ANSI['bg_magenta']} 4 {ANSI['reset']} - {ANSI['negrito']}Atualizar cadastro de uma pessoa{ANSI['reset']}")
+    print(f"{ANSI['bg_ciano']} 5 {ANSI['reset']} - {ANSI['negrito']}Excluir uma pessoa cadastrada{ANSI['reset']}")
     linha()
 
-
-def formatar_erro(msg) -> None:
+def formatar_erro(msg:str) -> None:
     print(f"{ANSI['bg_vermelho']}{"ERRO! "}{msg}{ANSI['reset']}")
 
-
-def mostrar_cadastros(cadastros:list|None) -> None:
-    if cadastros is None:
-        formatar_erro("O arquivo não pôde ser aberto.")
+def mostrar_cadastros(dados:list[tuple]) -> None:
+    if not dados:
+        print(f"{ANSI['amarelo']}Não há nenhum cadastro ainda!{ANSI['reset']}\nVolte ao menu para começar a cadastrar.")
     else:
-        if not cadastros:
-            print(f"{ANSI['amarelo']}Não há nenhum cadastro ainda!{ANSI['reset']}\nVolte ao menu para começar a cadastrar.")
-        else:
-            for nome, idade in cadastros:
-                print(f"{nome:<40}{idade:>3} anos")
+        for id, nome, idade in dados:
+            print(f"{id} - {nome:<40}{idade:>3} anos")
 
-
-def mensagem_erro_arquivo_nao_criado() -> None:
-    formatar_erro("O arquivo não foi criado.")
-
-
-def mensagem_erro_cadastro() -> None:
-    formatar_erro("O cadastro não pôde ser finalizado.")
-
+def mostrar_cadastro_unico(dado:tuple) -> None:
+    id, nome, idade = dado
+    print(f"{id} - {nome:<40}{idade:>3} anos")
 
 def mensagem_cadastro_realizado(nome:str) -> None:
     print(f"{ANSI['bg_verde']}Novo registro adicionado: {ANSI['negrito']}{ANSI['sublinhado']}{nome} {ANSI['reset']}")
 
+def mensagem_alteracao_realizada(nome:str, idade:int) -> None:
+    print(f"{ANSI['bg_verde']}O registro foi alterado com sucesso para: {ANSI['negrito']}{ANSI['sublinhado']}{nome} | {idade} anos {ANSI['reset']}")
+
+def mensagem_exclusao_realizada() -> None:
+    print(f"{ANSI['bg_verde']}Exclusão realizada com sucesso!{ANSI['negrito']}{ANSI['reset']}")
 
 def leia_int(txt:str) -> int:
     while True:
@@ -85,7 +80,6 @@ def leia_int(txt:str) -> int:
             return 0
         else:
             return num
-        
 
 def leia_str(txt:str) -> str:
     while True:
@@ -99,15 +93,13 @@ def leia_str(txt:str) -> str:
         else:
             return nome
 
-
 def pedir_opcao() -> int:
     while True:
         opc = leia_int("Sua Opção: ")
-        if opc < 0 or opc > 3:
+        if opc < 0 or opc > 5:
             formatar_erro("Digite uma opção válida.")
         else:
-            return opc
-        
+            return opc    
 
 def ler_nome() -> str:
     nomes_lista = []
@@ -117,7 +109,6 @@ def ler_nome() -> str:
     nome_completo = " ".join(nomes_lista)
     return nome_completo
 
-
 def ler_idade() -> int:
     while True:
         idade = leia_int("Idade: ")
@@ -125,19 +116,24 @@ def ler_idade() -> int:
             formatar_erro("Essa idade não é válida.")
             continue
         return idade
-    
+
+def ler_id() -> int:
+    while True:
+        id = leia_int("ID do usuário: ")
+        if id <= 0:
+            formatar_erro("Esse ID não é válido.")
+            continue
+        return id
 
 def sair() -> None:
     titulo("Saindo do sistema... Até logo!!")
     sleep(1.5)
-
 
 def limpar_terminal() -> None:
     if os.name == "nt":
         os.system("cls")
     else:
         os.system("clear")
-
 
 def retornar() -> None:
     sleep(1)
