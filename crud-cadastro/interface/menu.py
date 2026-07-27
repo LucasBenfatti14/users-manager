@@ -1,3 +1,4 @@
+from database.pessoa import Pessoa
 from time import sleep
 import os
 
@@ -48,16 +49,15 @@ def mostrar_menu() -> None:
 def formatar_erro(msg:str) -> None:
     print(f"{ANSI['bg_vermelho']}{"ERRO! "}{msg}{ANSI['reset']}")
 
-def mostrar_cadastros(dados:list[tuple]) -> None:
-    if not dados:
+def mostrar_cadastros(pessoas:list[Pessoa]) -> None:
+    if not pessoas:
         print(f"{ANSI['amarelo']}Não há nenhum cadastro ainda!{ANSI['reset']}\nVolte ao menu para começar a cadastrar.")
     else:
-        for id, nome, idade in dados:
-            print(f"{id} - {nome:<40}{idade:>3} anos")
+        for pessoa in pessoas:
+            print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
 
-def mostrar_cadastro_unico(dado:tuple) -> None:
-    id, nome, idade = dado
-    print(f"{id} - {nome:<40}{idade:>3} anos")
+def mostrar_cadastro_unico(pessoa:Pessoa) -> None:
+    print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
 
 def mensagem_cadastro_realizado(nome:str) -> None:
     print(f"{ANSI['bg_verde']}Novo registro adicionado: {ANSI['negrito']}{ANSI['sublinhado']}{nome} {ANSI['reset']}")
