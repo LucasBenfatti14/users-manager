@@ -5,7 +5,7 @@ from .pessoa import Pessoa
 
 class PessoaDAO:
 
-    def cadastrar(self, nome:str, idade:int) -> Pessoa | None:
+    def cadastrar(self, pessoa:Pessoa) -> Pessoa | None:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()
@@ -13,10 +13,10 @@ class PessoaDAO:
                 INSERT INTO pessoas (nome, idade)
                 VALUES (?, ?)
             """,
-                (nome, idade)
+                (pessoa.nome, pessoa.idade)
             )
-                id_gerado = cursor.lastrowid
-                return Pessoa(id = id_gerado, nome = nome, idade = idade)
+                pessoa.id = cursor.lastrowid
+                return pessoa
         except sqlite3.Error:
             return None
 
@@ -42,6 +42,23 @@ class PessoaDAO:
                 SELECT id, nome, idade FROM pessoas
                 WHERE id = ?
             """, (id,)
+            )
+                dados = cursor.fetchone()
+                if dados is None:
+                    return None
+                id, nome, idade = dados
+                return Pessoa(id = id, nome = nome, idade = idade)
+        except sqlite3.Error:
+            return None
+
+    def buscar_por_nome(self, nome:str) -> Pessoa | None:
+        try:
+            with ConexaoBanco() as conexao:
+                cursor = conexao.cursor()
+                cursor.execute("""
+                SELECT id, nome, idade FROM pessoas
+                WHERE nome = ?
+            """, (nome,)
             )
                 dados = cursor.fetchone()
                 if dados is None:
