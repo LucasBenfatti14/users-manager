@@ -1,5 +1,6 @@
 import sqlite3
 from .conexao import ConexaoBanco
+from exceptions import BancoDeDadosError
 
 def criar_tabela() -> bool:
     try:
@@ -13,5 +14,5 @@ def criar_tabela() -> bool:
             )
         """)
             return True
-    except sqlite3.Error:
-        return False
+    except sqlite3.Error as erro:
+        raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro

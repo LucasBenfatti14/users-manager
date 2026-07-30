@@ -1,0 +1,2 @@
+class BancoDeDadosError(Exception):
+    pass
