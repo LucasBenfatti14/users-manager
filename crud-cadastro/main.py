@@ -1,10 +1,9 @@
-from interface import (mostrar_menu, pedir_opcao, sair, linha, retornar, titulo, ler_nome, ler_idade, ler_id, mostrar_cadastros, mensagem_cadastro_realizado, formatar_erro, mensagem_alteracao_realizada, mensagem_exclusao_realizada, mostrar_cadastro_unico)
+from interface import (mostrar_menu, pedir_opcao, sair, linha, retornar, titulo, ler_nome, ler_idade, ler_id, mostrar_cadastros, mensagem_cadastro_realizado, formatar_erro, mensagem_alteracao_realizada, mensagem_exclusao_realizada, mensagem_sem_cadastros, mostrar_cadastro_unico)
 from database import criar_tabela
-from database.pessoa_dao import PessoaDAO
+from database import PessoaDAO
 from services import PessoaService
-from database.pessoa import Pessoa
-from exceptions import (BancoDeDadosError, PessoaJaCadastradaError)
-
+from domain import Pessoa
+from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, IdadeInvalidaError)
 
 def main():
     pessoa_dao = PessoaDAO()
@@ -24,7 +23,11 @@ def main():
             case 1:
                 titulo("PESSOAS CADASTRADAS")
                 try:
-                    mostrar_cadastros(pessoa_service.listar())
+                    lista = pessoa_service.listar()
+                    if not lista:
+                        mensagem_sem_cadastros()
+                    else:
+                        mostrar_cadastros(lista)
                 except BancoDeDadosError:
                     formatar_erro("Não foi possível acessar o banco de dados.")
             case 2:
@@ -33,6 +36,10 @@ def main():
                 try:
                     pessoa_cadastrada = pessoa_service.cadastrar(pessoa)
                     mensagem_cadastro_realizado(pessoa_cadastrada.nome)
+                except NomeInvalidoError:
+                    formatar_erro("O nome informado é inválido.")
+                except IdadeInvalidaError:
+                    formatar_erro("A idade informada é inválida")
                 except PessoaJaCadastradaError:
                     formatar_erro("Esse nome já foi cadastrado.")
                 except BancoDeDadosError:
@@ -60,8 +67,12 @@ def main():
                         pessoa_econtrada.idade = ler_idade()
                         if pessoa_service.atualizar(pessoa_econtrada):
                             mensagem_alteracao_realizada(pessoa_econtrada.nome, pessoa_econtrada.idade)
-                        else:
-                            formatar_erro("Não foi possível alterar os dados dessa pessoa. Tente novamente mais tarde!")
+                except NomeInvalidoError:
+                    formatar_erro("O nome informado é inválido.")
+                except IdadeInvalidaError:
+                    formatar_erro("A idade informada é inválida.")
+                except PessoaJaCadastradaError:
+                    formatar_erro("Esse nome já pertence a outra pessoa.")
                 except BancoDeDadosError:
                     formatar_erro("Não foi possível acessar o banco de dados.")
             case 5:
@@ -71,7 +82,7 @@ def main():
                     if pessoa_service.excluir(id_pessoa):
                         mensagem_exclusao_realizada()
                     else:
-                        formatar_erro("Não foi possível excluir esse registro. Tente novamente mais tarde!")
+                        formatar_erro("Não existe nenhuma pessoa cadastrada com esse ID!")
                 except BancoDeDadosError:
                     formatar_erro("Não foi possível acessar o banco de dados.")
         linha()

@@ -1,18 +1,18 @@
-from database.pessoa_dao import PessoaDAO
-from database.pessoa import Pessoa
-from exceptions import PessoaJaCadastradaError
+from database import PessoaDAO
+from domain import Pessoa
+from exceptions import (PessoaJaCadastradaError, NomeInvalidoError, IdadeInvalidaError)
 
 class PessoaService:
 
     def __init__(self, dao:PessoaDAO) -> None:
         self.dao = dao
 
-    def cadastrar(self, pessoa:Pessoa) -> Pessoa | None:
+    def cadastrar(self, pessoa:Pessoa) -> Pessoa:
         self._normalizar_nome(pessoa)
         if not self._validar_nome(pessoa.nome):
-            return None
+            raise NomeInvalidoError()
         if not self._validar_idade(pessoa.idade):
-            return None
+            raise IdadeInvalidaError()
         if self._nome_ja_existe(pessoa.nome):
             raise PessoaJaCadastradaError()
         return self.dao.cadastrar(pessoa)
@@ -26,11 +26,11 @@ class PessoaService:
     def atualizar(self, pessoa:Pessoa) -> bool:
         self._normalizar_nome(pessoa)
         if not self._validar_nome(pessoa.nome):
-            return False
+            raise NomeInvalidoError()
         if not self._validar_idade(pessoa.idade):
-            return False
+            raise IdadeInvalidaError()
         if self._nome_ja_existe_atualizar(pessoa):
-            return False
+            raise PessoaJaCadastradaError()
         return self.dao.atualizar(pessoa)
 
     def excluir(self, id:int) -> bool:

@@ -1,12 +1,11 @@
 import sqlite3
 from .conexao import ConexaoBanco
-from .pessoa import Pessoa
+from domain import Pessoa
 from exceptions import BancoDeDadosError
-
 
 class PessoaDAO:
 
-    def cadastrar(self, pessoa:Pessoa) -> Pessoa | None:
+    def cadastrar(self, pessoa:Pessoa) -> Pessoa:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()
@@ -21,7 +20,7 @@ class PessoaDAO:
         except sqlite3.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
-    def listar(self) -> list[Pessoa] | None:
+    def listar(self) -> list[Pessoa]:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()

@@ -1,7 +1,6 @@
-from database.pessoa import Pessoa
+from domain import Pessoa
 from time import sleep
 import os
-
 
 ANSI = {
     "preto": "\033[30m",
@@ -49,12 +48,12 @@ def mostrar_menu() -> None:
 def formatar_erro(msg:str) -> None:
     print(f"{ANSI['bg_vermelho']}{"ERRO! "}{msg}{ANSI['reset']}")
 
+def mensagem_sem_cadastros() -> None:
+    print(f"{ANSI['amarelo']}Não há nenhum cadastro ainda!{ANSI['reset']}\nVolte ao menu para começar a cadastrar.")
+
 def mostrar_cadastros(pessoas:list[Pessoa]) -> None:
-    if not pessoas:
-        print(f"{ANSI['amarelo']}Não há nenhum cadastro ainda!{ANSI['reset']}\nVolte ao menu para começar a cadastrar.")
-    else:
-        for pessoa in pessoas:
-            print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
+    for pessoa in pessoas:
+        print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
 
 def mostrar_cadastro_unico(pessoa:Pessoa) -> None:
     print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")

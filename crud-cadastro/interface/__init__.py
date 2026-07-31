@@ -1,1 +1,1 @@
-from .menu import *
+from .menu import (mostrar_menu, pedir_opcao, sair, linha, retornar, titulo, ler_nome, ler_idade, ler_id, mostrar_cadastros, mensagem_cadastro_realizado, formatar_erro, mensagem_alteracao_realizada, mensagem_exclusao_realizada, mensagem_sem_cadastros, mostrar_cadastro_unico)
