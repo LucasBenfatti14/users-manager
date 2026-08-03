@@ -1,29 +1,29 @@
 <h1 align="center">📋 Gerenciador de Usuários CLI</h1>
 
 <p align="center">
-  💻 Projeto pessoal em Python para gerenciamento de cadastros <br>
-  🗄️ Persistência de dados em banco SQLite com arquitetura modular
+  💻 Sistema CRUD desenvolvido em Python para gerenciamento de pessoas <br>
+  🗄️ Persistência em SQLite com arquitetura em camadas e separação de responsabilidades
 </p>
 
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=700&lines=CRUD+em+Python...;Banco+de+Dados+SQLite...;Arquitetura+Modular...;Tratamento+de+Exceções..." />
+  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=700&lines=CRUD+em+Python...;Banco+de+Dados+SQLite...;Arquitetura+em+Camadas...;Regras+de+Negócio...;Injeção+de+Dependência..." />
 </p>
 
 ---
 
 ## 🚀 Sobre o projeto
 
-Este projeto consiste em um sistema CRUD desenvolvido em Python para gerenciamento de pessoas através de uma interface de linha de comando (CLI).
+O **Gerenciador de Usuários CLI** é um sistema CRUD desenvolvido em Python para gerenciamento de pessoas através de uma interface de linha de comando.
 
-A aplicação permite cadastrar, listar, buscar, atualizar e excluir registros armazenados em um banco de dados SQLite, utilizando SQL para realizar as operações de persistência dos dados.
+A aplicação permite **cadastrar, listar, buscar, atualizar e excluir** registros armazenados em um banco de dados SQLite, utilizando SQL para as operações de persistência.
 
-Durante o desenvolvimento, o projeto foi estruturado seguindo o princípio da separação de responsabilidades, dividindo a aplicação em módulos responsáveis pela interface com o usuário, lógica de execução e acesso ao banco de dados.
+O projeto foi estruturado utilizando **arquitetura em camadas**, separando responsabilidades entre interface, domínio, regras de negócio e acesso a dados.
 
-O projeto também utiliza tratamento de exceções para lidar com possíveis erros durante as operações de banco de dados, além de validações de entrada para garantir maior consistência dos dados fornecidos pelo usuário.
+Durante o desenvolvimento, foram aplicados conceitos de **Programação Orientada a Objetos, separação de responsabilidades, injeção de dependência, validação de dados, normalização e exceções personalizadas**.
 
-Trata-se de um projeto **100% autoral**, desenvolvido com o objetivo de praticar programação em Python, integração com bancos de dados relacionais, SQL, operações CRUD, modularização e boas práticas de desenvolvimento.
+Trata-se de um projeto **100% autoral**, desenvolvido com o objetivo de aprofundar conhecimentos em Python, bancos de dados relacionais, SQL, arquitetura de software e boas práticas de desenvolvimento.
 
 ---
 
@@ -33,45 +33,106 @@ Trata-se de um projeto **100% autoral**, desenvolvido com o objetivo de praticar
   <img src="https://skillicons.dev/icons?i=python,sqlite" />
 </p>
 
+* **Python**
+* **SQLite**
+* **SQL**
+* **Git/GitHub**
+
 ---
 
 ## 🎯 Funcionalidades
 
 * 👤 Cadastro de novas pessoas
-* 📋 Listagem de todas as pessoas cadastradas
-* 🔍 Busca de uma pessoa por ID
-* ✏️ Atualização dos dados de uma pessoa
-* 🗑️ Exclusão de uma pessoa cadastrada
-* 💾 Persistência de dados em banco SQLite
-* 🗄️ Criação automática da tabela no banco de dados
-* 🔐 Uso de consultas parametrizadas para execução segura de SQL
-* ✅ Validação de entradas do usuário
-* ⚠️ Tratamento de exceções com `try` / `except`
-* 🔄 Controle de transações com `commit()` e `rollback()`
-* 🧩 Arquitetura modular com separação de responsabilidades
+* 📋 Listagem de pessoas cadastradas
+* 🔍 Busca de pessoa por ID
+* ✏️ Atualização de cadastro
+* 🗑️ Exclusão de cadastro
+* 💾 Persistência de dados em SQLite
+* 🗄️ Criação automática da tabela
+* 🔐 Consultas SQL parametrizadas
+* ✅ Validação de dados
+* ✨ Normalização de nomes
+* ⚠️ Exceções personalizadas
+* 🔄 Tratamento de erros de banco de dados
+* 🧩 Arquitetura em camadas
+* 💉 Injeção de dependência
 
 ---
 
-## 🏗️ Estrutura do projeto
+## 🏗️ Arquitetura
+
+A aplicação utiliza uma arquitetura em camadas para separar responsabilidades:
 
 ```text
-crud-cadastro/
-├── database/
-│   ├── __init__.py
-│   └── db.py
-├── interface/
-│   ├── __init__.py
-│   └── menu.py
-├── main.py
-├── .gitignore
-└── README.md
+Interface
+    ↓
+Main
+    ↓
+Service
+    ↓
+DAO
+    ↓
+SQLite
 ```
 
-### 📂 Organização
+### 📂 Camadas
 
-* `database/` → Responsável pela conexão e pelas operações realizadas no banco de dados SQLite.
-* `interface/` → Responsável pela interação com o usuário, validação das entradas e apresentação das informações no terminal.
-* `main.py` → Responsável por coordenar o fluxo principal da aplicação.
+**`interface/`**
+Responsável pela interação com o usuário, entrada de dados, menus e apresentação das informações.
+
+**`domain/`**
+Contém as entidades do domínio utilizadas pela aplicação, como `Pessoa`.
+
+**`services/`**
+Responsável pelas regras de negócio, validações, normalização e orquestração das operações.
+
+**`database/`**
+Responsável pela persistência dos dados e comunicação direta com o SQLite através do DAO.
+
+**`exceptions/`**
+Centraliza as exceções específicas da aplicação, permitindo que diferentes tipos de erro sejam tratados adequadamente.
+
+**`main.py`**
+Coordena o fluxo da aplicação e conecta as diferentes camadas.
+
+---
+
+## 🧠 Conceitos aplicados
+
+* Programação Orientada a Objetos (POO)
+* Entidades e modelagem de domínio
+* CRUD
+* Persistência de dados
+* SQL e banco de dados relacional
+* Data Access Object (DAO)
+* Service Layer
+* Arquitetura em camadas
+* Separação de responsabilidades
+* Injeção de dependência
+* Regras de negócio
+* Validação e normalização de dados
+* Exceções personalizadas
+* Encapsulamento de detalhes de infraestrutura
+* Consultas parametrizadas
+* Gerenciamento de recursos com `with`
+
+---
+
+## 📚 Aprendizados
+
+Durante o desenvolvimento, o projeto foi evoluindo de uma aplicação simples para uma estrutura mais próxima de aplicações profissionais.
+
+Entre os principais aprendizados estão:
+
+* Separar regras de negócio do código de interface.
+* Evitar que a aplicação dependa diretamente da tecnologia de banco utilizada.
+* Utilizar entidades para representar conceitos do domínio.
+* Centralizar o acesso aos dados através do DAO.
+* Utilizar injeção de dependência para reduzir acoplamento.
+* Criar exceções específicas para diferentes situações de erro.
+* Diferenciar ausência de dados, falha operacional e exceções.
+* Validar e normalizar dados antes da persistência.
+* Organizar o código visando manutenção, legibilidade e evolução.
 
 ---
 
@@ -83,7 +144,7 @@ crud-cadastro/
 git clone https://github.com/LucasBenfatti14/users-manager
 ```
 
-### 2. Acesse a pasta do projeto
+### 2. Acesse a pasta
 
 ```bash
 cd users-manager
@@ -95,40 +156,18 @@ cd users-manager
 python main.py
 ```
 
-O banco de dados SQLite será criado automaticamente na primeira execução, assim como a tabela necessária para armazenar os registros.
-
----
-
-## 💡 Aprendizados
-
-* Fundamentos de bancos de dados relacionais
-* Integração de Python com SQLite
-* Utilização da biblioteca `sqlite3`
-* Criação e gerenciamento de conexões com banco de dados
-* Utilização de `cursor` para execução de comandos SQL
-* Execução de comandos SQL através de `execute()`
-* Operações CRUD com SQL
-* Utilização de `fetchone()` e `fetchall()`
-* Controle de transações com `commit()` e `rollback()`
-* Gerenciamento de recursos com `try`, `except` e `finally`
-* Tratamento de exceções específicas do SQLite
-* Consultas parametrizadas com placeholders (`?`)
-* Modularização de projetos Python
-* Separação de responsabilidades
-* Validação de dados de entrada
-* Organização de aplicações em múltiplos módulos
-* Desenvolvimento de aplicações CLI
+O banco SQLite e a tabela necessária são preparados automaticamente durante a inicialização da aplicação.
 
 ---
 
 ## 🚧 Próximos passos
 
-* 🔄 Melhorar o gerenciamento de conexões utilizando `with`
-* 🧱 Criar uma camada de serviço para separar a lógica de negócio do acesso ao banco
-* 🧪 Adicionar testes automatizados
-* 📝 Implementar logs da aplicação
-* 🔐 Aprimorar as validações e regras de negócio
-* 🌐 Desenvolver uma API REST utilizando Flask ou FastAPI
+* 🧪 Implementar testes automatizados
+* 📝 Adicionar logging da aplicação
+* 🔄 Implementar Repository Pattern
+* 🔐 Aprimorar regras de negócio e validações
+* 🌐 Criar uma API REST utilizando FastAPI
+* 📦 Melhorar configuração e gerenciamento do projeto
 
 ---
 
@@ -142,5 +181,5 @@ O banco de dados SQLite será criado automaticamente na primeira execução, ass
 ---
 
 <p align="center">
-  🚀 Em constante evolução
+  🚀 Projeto em constante evolução
 </p>
