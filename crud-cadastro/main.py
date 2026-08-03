@@ -6,8 +6,8 @@ from domain import Pessoa
 from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, IdadeInvalidaError)
 
 def main():
-    pessoa_dao = PessoaDAO()
-    pessoa_service = PessoaService(pessoa_dao)
+    pessoa_repository = PessoaDAO()
+    pessoa_service = PessoaService(pessoa_repository)
     try:
         criar_tabela()
     except BancoDeDadosError:

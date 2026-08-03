@@ -2,8 +2,9 @@ import sqlite3
 from .conexao import ConexaoBanco
 from domain import Pessoa
 from exceptions import BancoDeDadosError
+from repositories import PessoaRepository
 
-class PessoaDAO:
+class PessoaDAO(PessoaRepository):
 
     def cadastrar(self, pessoa:Pessoa) -> Pessoa:
         try:

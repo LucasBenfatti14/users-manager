@@ -1,11 +1,11 @@
-from database import PessoaDAO
+from repositories import PessoaRepository
 from domain import Pessoa
 from exceptions import (PessoaJaCadastradaError, NomeInvalidoError, IdadeInvalidaError)
 
 class PessoaService:
 
-    def __init__(self, dao:PessoaDAO) -> None:
-        self.dao = dao
+    def __init__(self, repository:PessoaRepository) -> None:
+        self.repository = repository
 
     def cadastrar(self, pessoa:Pessoa) -> Pessoa:
         self._normalizar_nome(pessoa)
@@ -15,13 +15,13 @@ class PessoaService:
             raise IdadeInvalidaError()
         if self._nome_ja_existe(pessoa.nome):
             raise PessoaJaCadastradaError()
-        return self.dao.cadastrar(pessoa)
+        return self.repository.cadastrar(pessoa)
 
-    def listar(self) -> list[Pessoa] | None:
-        return self.dao.listar()
+    def listar(self) -> list[Pessoa]:
+        return self.repository.listar()
 
     def buscar(self, id:int) -> Pessoa | None:
-        return self.dao.buscar(id)
+        return self.repository.buscar(id)
 
     def atualizar(self, pessoa:Pessoa) -> bool:
         self._normalizar_nome(pessoa)
@@ -31,10 +31,10 @@ class PessoaService:
             raise IdadeInvalidaError()
         if self._nome_ja_existe_atualizar(pessoa):
             raise PessoaJaCadastradaError()
-        return self.dao.atualizar(pessoa)
+        return self.repository.atualizar(pessoa)
 
     def excluir(self, id:int) -> bool:
-        return self.dao.excluir(id)
+        return self.repository.excluir(id)
 
     def _normalizar_nome(self, pessoa:Pessoa) -> None:
         pessoa.nome = pessoa.nome.strip()
@@ -64,9 +64,9 @@ class PessoaService:
         return True
 
     def _nome_ja_existe(self, nome:str) -> bool:
-        if self.dao.buscar_por_nome(nome):
+        if self.repository.buscar_por_nome(nome):
             return True
         return False
 
     def _nome_ja_existe_atualizar(self, pessoa:Pessoa) -> bool:
-        return self.dao.buscar_para_atualizar(pessoa)
+        return self.repository.buscar_para_atualizar(pessoa)
