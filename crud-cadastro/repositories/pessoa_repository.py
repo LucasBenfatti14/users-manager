@@ -4,7 +4,7 @@ from domain import Pessoa
 class PessoaRepository(ABC):
 
     @abstractmethod
-    def cadastrar(self, pessoa:Pessoa) -> Pessoa:
+    def cadastrar(self, pessoa:Pessoa) -> int:
         pass
 
     @abstractmethod

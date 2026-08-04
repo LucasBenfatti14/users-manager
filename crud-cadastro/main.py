@@ -3,7 +3,7 @@ from database import criar_tabela
 from database import PessoaDAO
 from services import PessoaService
 from domain import Pessoa
-from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, IdadeInvalidaError)
+from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError)
 
 def main():
     pessoa_repository = PessoaDAO()
@@ -32,10 +32,14 @@ def main():
                     formatar_erro("Não foi possível acessar o banco de dados.")
             case 2:
                 titulo("NOVO CADASTRO")
-                pessoa = Pessoa(id=0, nome=ler_nome(), idade=ler_idade())
                 try:
-                    pessoa_cadastrada = pessoa_service.cadastrar(pessoa)
-                    mensagem_cadastro_realizado(pessoa_cadastrada.nome)
+                    pessoa = Pessoa(id=None, nome=ler_nome(), idade=ler_idade())
+                    pessoa_service.cadastrar(pessoa)
+                    mensagem_cadastro_realizado(pessoa.nome)
+                except NomeIncompletoError:
+                    formatar_erro("O nome informado está incompleto.")
+                except NomeComCaracteresInvalidosError:
+                    formatar_erro("O nome informado possui caracteres inválidos.")
                 except NomeInvalidoError:
                     formatar_erro("O nome informado é inválido.")
                 except IdadeInvalidaError:
@@ -67,6 +71,10 @@ def main():
                         pessoa_econtrada.idade = ler_idade()
                         if pessoa_service.atualizar(pessoa_econtrada):
                             mensagem_alteracao_realizada(pessoa_econtrada.nome, pessoa_econtrada.idade)
+                except NomeIncompletoError:
+                    formatar_erro("O nome informado está incompleto.")
+                except NomeComCaracteresInvalidosError:
+                    formatar_erro("O nome informado possui caracteres inválidos.")
                 except NomeInvalidoError:
                     formatar_erro("O nome informado é inválido.")
                 except IdadeInvalidaError:

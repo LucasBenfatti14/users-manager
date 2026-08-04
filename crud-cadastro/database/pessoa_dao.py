@@ -6,7 +6,7 @@ from repositories import PessoaRepository
 
 class PessoaDAO(PessoaRepository):
 
-    def cadastrar(self, pessoa:Pessoa) -> Pessoa:
+    def cadastrar(self, pessoa:Pessoa) -> int:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()
@@ -16,8 +16,7 @@ class PessoaDAO(PessoaRepository):
             """,
                 (pessoa.nome, pessoa.idade)
             )
-                pessoa.id = cursor.lastrowid
-                return pessoa
+                return cursor.lastrowid
         except sqlite3.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
