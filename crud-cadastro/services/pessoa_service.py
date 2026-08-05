@@ -7,12 +7,10 @@ class PessoaService:
     def __init__(self, repository:PessoaRepository) -> None:
         self.repository = repository
 
-    def cadastrar(self, pessoa:Pessoa) -> Pessoa:
+    def cadastrar(self, pessoa:Pessoa) -> int:
         if self._nome_ja_existe(pessoa.nome):
             raise PessoaJaCadastradaError()
-        id_gerado = self.repository.cadastrar(pessoa)
-        pessoa._definir_id(id_gerado)
-        return pessoa
+        return self.repository.cadastrar(pessoa)
 
     def listar(self) -> list[Pessoa]:
         return self.repository.listar()

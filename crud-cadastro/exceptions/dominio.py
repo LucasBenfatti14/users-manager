@@ -4,6 +4,9 @@ class DominioError(Exception):
 class NomeInvalidoError(DominioError):
     pass
 
+class IdJaDefinidoError(DominioError):
+    pass
+
 class NomeComCaracteresInvalidosError(NomeInvalidoError):
     pass
 

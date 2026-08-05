@@ -34,7 +34,8 @@ def main():
                 titulo("NOVO CADASTRO")
                 try:
                     pessoa = Pessoa(id=None, nome=ler_nome(), idade=ler_idade())
-                    pessoa_service.cadastrar(pessoa)
+                    id_gerado = pessoa_service.cadastrar(pessoa)
+                    pessoa.registrar_persistencia(id_gerado)
                     mensagem_cadastro_realizado(pessoa.nome)
                 except NomeIncompletoError:
                     formatar_erro("O nome informado está incompleto.")

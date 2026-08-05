@@ -1,4 +1,4 @@
-from exceptions import (NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError)
+from exceptions import (NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError)
 
 class Pessoa:
 
@@ -58,5 +58,7 @@ class Pessoa:
             if idade < 0 or idade >= 150:
                 raise IdadeInvalidaError()
 
-    def _definir_id(self, id:int) -> None:
-         self._id = id
+    def registrar_persistencia(self, id:int) -> None:
+        if self._id is not None:
+            raise IdJaDefinidoError()
+        self._id = id
