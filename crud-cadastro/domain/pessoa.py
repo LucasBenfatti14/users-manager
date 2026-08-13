@@ -58,7 +58,7 @@ class Pessoa:
             if idade < 0 or idade >= 150:
                 raise IdadeInvalidaError()
 
-    def registrar_persistencia(self, id:int) -> None:
+    def registrar_persistencia(self, id_gerado:int) -> None:
         if self._id is not None:
             raise IdJaDefinidoError()
-        self._id = id
+        self._id = id_gerado
