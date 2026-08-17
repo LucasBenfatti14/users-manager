@@ -99,14 +99,14 @@ class PessoaDAO(PessoaRepository):
         except sqlite3.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
-    def buscar_para_atualizar(self, pessoa:Pessoa) -> bool:
+    def buscar_para_atualizar(self, id:int, nome_novo:str) -> bool:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()
                 cursor.execute("""
                 SELECT nome FROM pessoas
                 WHERE id <> ? AND nome = ?
-            """, (pessoa.id, pessoa.nome))
+            """, (id, nome_novo))
                 dado = cursor.fetchone()
                 if dado is None:
                     return False

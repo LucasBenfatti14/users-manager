@@ -33,16 +33,16 @@ class Pessoa:
     def _validar_nome(self, nome:str) -> None:
             nome_completo = nome.split()
             if len(nome_completo) <= 1:
-                raise NomeIncompletoError()
+                raise NomeIncompletoError("O nome informado está incompleto.")
             for i, nome_pessoa in enumerate(nome_completo):
                 if not nome_pessoa.isalpha():
-                    raise NomeComCaracteresInvalidosError()
+                    raise NomeComCaracteresInvalidosError("O nome informado possui caracteres inválidos.")
                 if i == 0:
                     if len(nome_pessoa) < 3 or len(nome_pessoa) > 32:
-                        raise NomeInvalidoError()
+                        raise NomeInvalidoError("O nome informado é inválido.")
                 else:
                     if len(nome_pessoa) < 2 or len(nome_pessoa) > 50:
-                        raise NomeInvalidoError()
+                        raise NomeInvalidoError("O nome informado é inválido.")
 
     def _normalizar_nome(self, nome:str) -> str:
             nome = nome.strip()
@@ -56,9 +56,16 @@ class Pessoa:
 
     def _validar_idade(self, idade:int) -> None:
             if idade < 0 or idade >= 150:
-                raise IdadeInvalidaError()
+                raise IdadeInvalidaError("A idade informada é inválida.")
 
     def registrar_persistencia(self, id_gerado:int) -> None:
         if self._id is not None:
-            raise IdJaDefinidoError()
+            raise IdJaDefinidoError("O ID desta pessoa já foi definido e não pode ser alterado")
         self._id = id_gerado
+
+    def atualizar(self, nome: str, idade: int) -> None:
+        nome = self._normalizar_nome(nome)
+        self._validar_nome(nome)
+        self._validar_idade(idade)
+        self._nome = nome
+        self._idade = idade

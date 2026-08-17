@@ -64,14 +64,14 @@ def main():
                 titulo("ATUALIZAR CADASTRO")
                 id_pessoa = ler_id()
                 try:
-                    pessoa_econtrada = pessoa_service.buscar(id_pessoa)
-                    if pessoa_econtrada is None:
+                    pessoa_encontrada = pessoa_service.buscar(id_pessoa)
+                    if pessoa_encontrada is None:
                         formatar_erro("Não existe nenhuma pessoa cadastrada com esse ID!")
                     else:
-                        pessoa_econtrada.nome = ler_nome()
-                        pessoa_econtrada.idade = ler_idade()
-                        if pessoa_service.atualizar(pessoa_econtrada):
-                            mensagem_alteracao_realizada(pessoa_econtrada.nome, pessoa_econtrada.idade)
+                        nome_novo = ler_nome()
+                        idade_nova = ler_idade()
+                        if pessoa_service.atualizar(pessoa_encontrada, nome_novo, idade_nova):
+                            mensagem_alteracao_realizada(pessoa_encontrada.nome, pessoa_encontrada.idade)
                 except NomeIncompletoError:
                     formatar_erro("O nome informado está incompleto.")
                 except NomeComCaracteresInvalidosError:

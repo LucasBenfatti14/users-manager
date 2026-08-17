@@ -9,7 +9,7 @@ class PessoaService:
 
     def cadastrar(self, pessoa:Pessoa) -> int:
         if self._nome_ja_existe(pessoa.nome):
-            raise PessoaJaCadastradaError()
+            raise PessoaJaCadastradaError("Esse nome já foi cadastrado.")
         return self.repository.cadastrar(pessoa)
 
     def listar(self) -> list[Pessoa]:
@@ -18,9 +18,10 @@ class PessoaService:
     def buscar(self, id:int) -> Pessoa | None:
         return self.repository.buscar(id)
 
-    def atualizar(self, pessoa:Pessoa) -> bool:
-        if self._nome_ja_existe_atualizar(pessoa):
-            raise PessoaJaCadastradaError()
+    def atualizar(self, pessoa:Pessoa, nome_novo:str, idade_nova:int) -> bool:
+        if self._nome_ja_existe_atualizar(pessoa.id, nome_novo):
+            raise PessoaJaCadastradaError("Esse nome já foi cadastrado.")
+        pessoa.atualizar(nome_novo, idade_nova)
         return self.repository.atualizar(pessoa)
 
     def excluir(self, id:int) -> bool:
@@ -31,5 +32,5 @@ class PessoaService:
             return True
         return False
 
-    def _nome_ja_existe_atualizar(self, pessoa:Pessoa) -> bool:
-        return self.repository.buscar_para_atualizar(pessoa)
+    def _nome_ja_existe_atualizar(self, id:int, nome_novo:str) -> bool:
+        return self.repository.buscar_para_atualizar(id, nome_novo)
