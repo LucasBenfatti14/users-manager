@@ -20,7 +20,7 @@ class PessoaRepository(ABC):
         pass
 
     @abstractmethod
-    def atualizar(self, pessoa:Pessoa) -> bool:
+    def atualizar(self, pessoa:Pessoa) -> None:
         pass
 
     @abstractmethod
@@ -28,5 +28,5 @@ class PessoaRepository(ABC):
         pass
 
     @abstractmethod
-    def buscar_para_atualizar(self, pessoa:Pessoa) -> bool:
+    def buscar_para_atualizar(self, id:int, nome_novo:str) -> bool:
         pass

@@ -1,1 +1,1 @@
-from .pessoa import PessoaResponse, PessoaCreate
+from .pessoa import PessoaResponse, PessoaCreate, PessoaPatch

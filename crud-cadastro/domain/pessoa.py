@@ -1,4 +1,4 @@
-from exceptions import (NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError)
+from exceptions import (NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError, NomeEIdadeNaoFornecidos)
 
 class Pessoa:
 
@@ -17,7 +17,7 @@ class Pessoa:
 
     @nome.setter
     def nome(self, valor):
-        valor = self._normalizar_nome(valor)
+        valor = Pessoa.normalizar_nome(valor)
         self._validar_nome(valor)
         self._nome = valor
 
@@ -44,7 +44,8 @@ class Pessoa:
                     if len(nome_pessoa) < 2 or len(nome_pessoa) > 50:
                         raise NomeInvalidoError("O nome informado é inválido.")
 
-    def _normalizar_nome(self, nome:str) -> str:
+    @staticmethod
+    def normalizar_nome(nome:str) -> str:
             nome = nome.strip()
             nome_completo = nome.split()
             nome_completo_normalizado = []
@@ -60,12 +61,23 @@ class Pessoa:
 
     def registrar_persistencia(self, id_gerado:int) -> None:
         if self._id is not None:
-            raise IdJaDefinidoError("O ID desta pessoa já foi definido e não pode ser alterado")
+            raise IdJaDefinidoError("O ID desta pessoa já foi definido e não pode ser alterado.")
         self._id = id_gerado
 
-    def atualizar(self, nome: str, idade: int) -> None:
-        nome = self._normalizar_nome(nome)
+    def atualizar(self, nome:str, idade:int) -> None:
+        nome = Pessoa.normalizar_nome(nome)
         self._validar_nome(nome)
         self._validar_idade(idade)
         self._nome = nome
         self._idade = idade
+
+    def atualizar_parcialmente(self, nome:str|None, idade:int|None) -> None:
+        if nome is not None:
+            nome = Pessoa.normalizar_nome(nome)
+            self._validar_nome(nome)
+            self._nome = nome
+        if idade is not None:
+            self._validar_idade(idade)
+            self._idade = idade
+        if nome is None and idade is None:
+            raise NomeEIdadeNaoFornecidos("O nome e a idade não foram fornecidos para atualizar o cadastro.")

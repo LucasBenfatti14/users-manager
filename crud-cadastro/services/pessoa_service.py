@@ -18,11 +18,18 @@ class PessoaService:
     def buscar(self, id:int) -> Pessoa | None:
         return self.repository.buscar(id)
 
-    def atualizar(self, pessoa:Pessoa, nome_novo:str, idade_nova:int) -> bool:
+    def atualizar(self, pessoa:Pessoa, nome_novo:str, idade_nova:int) -> None:
         if self._nome_ja_existe_atualizar(pessoa.id, nome_novo):
             raise PessoaJaCadastradaError("Esse nome já foi cadastrado.")
         pessoa.atualizar(nome_novo, idade_nova)
-        return self.repository.atualizar(pessoa)
+        self.repository.atualizar(pessoa)
+
+    def atualizar_parcialmente(self, pessoa:Pessoa, nome_novo:str|None, idade_nova:int|None) -> None:
+        if nome_novo is not None:
+            if self._nome_ja_existe_atualizar(pessoa.id, nome_novo):
+                raise PessoaJaCadastradaError("Esse nome já foi cadastrado.")
+        pessoa.atualizar_parcialmente(nome_novo, idade_nova)
+        self.repository.atualizar(pessoa)
 
     def excluir(self, id:int) -> bool:
         return self.repository.excluir(id)
@@ -33,4 +40,5 @@ class PessoaService:
         return False
 
     def _nome_ja_existe_atualizar(self, id:int, nome_novo:str) -> bool:
+        nome_novo = Pessoa.normalizar_nome(nome_novo)
         return self.repository.buscar_para_atualizar(id, nome_novo)

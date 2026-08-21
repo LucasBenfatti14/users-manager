@@ -7,11 +7,14 @@ class NomeInvalidoError(DominioError):
 class IdJaDefinidoError(DominioError):
     pass
 
+class NomeEIdadeNaoFornecidos(DominioError):
+    pass
+
+class IdadeInvalidaError(DominioError):
+    pass
+
 class NomeComCaracteresInvalidosError(NomeInvalidoError):
     pass
 
 class NomeIncompletoError(NomeInvalidoError):
-    pass
-
-class IdadeInvalidaError(DominioError):
     pass

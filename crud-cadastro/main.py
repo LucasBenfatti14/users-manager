@@ -70,8 +70,8 @@ def main():
                     else:
                         nome_novo = ler_nome()
                         idade_nova = ler_idade()
-                        if pessoa_service.atualizar(pessoa_encontrada, nome_novo, idade_nova):
-                            mensagem_alteracao_realizada(pessoa_encontrada.nome, pessoa_encontrada.idade)
+                        pessoa_service.atualizar(pessoa_encontrada, nome_novo, idade_nova)
+                        mensagem_alteracao_realizada(pessoa_encontrada.nome, pessoa_encontrada.idade)
                 except NomeIncompletoError:
                     formatar_erro("O nome informado está incompleto.")
                 except NomeComCaracteresInvalidosError:

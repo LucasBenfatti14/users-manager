@@ -68,7 +68,7 @@ class PessoaDAO(PessoaRepository):
         except sqlite3.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
-    def atualizar(self, pessoa:Pessoa) -> bool:
+    def atualizar(self, pessoa:Pessoa) -> None:
         try:
             with ConexaoBanco() as conexao:
                 cursor = conexao.cursor()
@@ -78,9 +78,6 @@ class PessoaDAO(PessoaRepository):
                 WHERE id = ?
             """, (pessoa.nome, pessoa.idade, pessoa.id)
             )
-            if cursor.rowcount == 0:
-                return False
-            return True
         except sqlite3.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
