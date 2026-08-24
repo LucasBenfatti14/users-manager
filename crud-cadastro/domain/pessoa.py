@@ -72,12 +72,15 @@ class Pessoa:
         self._idade = idade
 
     def atualizar_parcialmente(self, nome:str|None, idade:int|None) -> None:
+        nome_normalizado = None
         if nome is not None:
-            nome = Pessoa.normalizar_nome(nome)
-            self._validar_nome(nome)
-            self._nome = nome
+            nome_normalizado = Pessoa.normalizar_nome(nome)
+            self._validar_nome(nome_normalizado)
         if idade is not None:
             self._validar_idade(idade)
-            self._idade = idade
         if nome is None and idade is None:
             raise NomeEIdadeNaoFornecidos("O nome e a idade não foram fornecidos para atualizar o cadastro.")
+        if nome_normalizado is not None:
+            self._nome = nome_normalizado
+        if idade is not None:
+            self._idade = idade

@@ -6,7 +6,6 @@ from services import PessoaService
 from api.models import PessoaResponse, PessoaCreate, PessoaPatch
 from domain import Pessoa
 from exceptions import BancoDeDadosError, DominioError, RegraDeNegocioError
-from interface import formatar_erro
 
 app = FastAPI()
 
