@@ -67,58 +67,44 @@ def mensagem_alteracao_realizada(nome:str, idade:int) -> None:
 def mensagem_exclusao_realizada() -> None:
     print(f"{ANSI['bg_verde']}Exclusão realizada com sucesso!{ANSI['negrito']}{ANSI['reset']}")
 
-def leia_int(txt:str) -> int:
+def ler_int(txt:str) -> int:
     while True:
         try:
-            num = int(input(txt))
-        except (ValueError, TypeError):
-            formatar_erro("Digite um número inteiro válido.")
-            continue
+            inteiro = int(input(txt))
+            return inteiro
         except KeyboardInterrupt:
             formatar_erro("O usuário optou por não inserir um número!")
             return 0
-        else:
-            return num
+        except ValueError:
+            formatar_erro("Digite um número inteiro válido!")
 
-def leia_str(txt:str) -> str:
-    while True:
-        nome = input(txt).strip()
-        if nome.isdigit():
-            formatar_erro("Digite um nome contendo apenas caracteres texto.")
-        elif nome == "":
-            formatar_erro("O nome não pode ser vazio.")
-        elif len(nome) <= 2:
-            formatar_erro("O nome precisa ter mais que 2 caracteres.")
-        else:
-            return nome
+def ler_str(txt:str) -> str:
+    try:
+        string = input(txt)
+        return string
+    except KeyboardInterrupt:
+        formatar_erro("O usuário optou por não inserir um texto!")
+        raise SystemExit
+
+def ler_idade() -> int:
+    idade = ler_int("Idade: ")
+    return idade
+
+def ler_nome() -> str:
+    nome = ler_str("Nome: ")
+    return nome
 
 def pedir_opcao() -> int:
     while True:
-        opc = leia_int("Sua Opção: ")
+        opc = ler_int("Sua Opção: ")
         if opc < 0 or opc > 5:
             formatar_erro("Digite uma opção válida.")
         else:
             return opc    
 
-def ler_nome() -> str:
-    nomes_lista = []
-    nome = leia_str("Nome: ").split()
-    for palavra in nome:
-        nomes_lista.append(palavra.capitalize())
-    nome_completo = " ".join(nomes_lista)
-    return nome_completo
-
-def ler_idade() -> int:
-    while True:
-        idade = leia_int("Idade: ")
-        if idade < 0 or len(str(idade)) > 3:
-            formatar_erro("Essa idade não é válida.")
-            continue
-        return idade
-
 def ler_id() -> int:
     while True:
-        id = leia_int("ID do usuário: ")
+        id = ler_int("ID do usuário: ")
         if id <= 0:
             formatar_erro("Esse ID não é válido.")
             continue

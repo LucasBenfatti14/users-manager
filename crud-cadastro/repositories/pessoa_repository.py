@@ -28,5 +28,5 @@ class PessoaRepository(ABC):
         pass
 
     @abstractmethod
-    def buscar_para_atualizar(self, id:int, nome_novo:str) -> bool:
+    def existe_nome_em_outro_id(self, id:int, nome_novo:str) -> bool:
         pass

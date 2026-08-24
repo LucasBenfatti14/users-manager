@@ -1,112 +1,89 @@
-import sqlite3
 from .conexao import ConexaoBanco
 from domain import Pessoa
-from exceptions import BancoDeDadosError
 from repositories import PessoaRepository
 
 class PessoaDAO(PessoaRepository):
 
     def cadastrar(self, pessoa:Pessoa) -> int:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                INSERT INTO pessoas (nome, idade)
-                VALUES (?, ?)
-            """,
-                (pessoa.nome, pessoa.idade)
-            )
-                return cursor.lastrowid
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            INSERT INTO pessoas (nome, idade)
+            VALUES (?, ?)
+        """,
+            (pessoa.nome, pessoa.idade)
+        )
+            return cursor.lastrowid
 
     def listar(self) -> list[Pessoa]:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                SELECT id, nome, idade FROM pessoas
-            """)
-                pessoas = []
-                for id, nome, idade in cursor.fetchall():
-                    pessoas.append(Pessoa(id = id, nome = nome, idade = idade))
-                return pessoas
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            SELECT id, nome, idade FROM pessoas
+        """)
+            pessoas = []
+            for id, nome, idade in cursor.fetchall():
+                pessoas.append(Pessoa(id = id, nome = nome, idade = idade))
+            return pessoas
 
     def buscar(self, id:int) -> Pessoa | None:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                SELECT id, nome, idade FROM pessoas
-                WHERE id = ?
-            """, (id,)
-            )
-                dados = cursor.fetchone()
-                if dados is None:
-                    return None
-                id, nome, idade = dados
-                return Pessoa(id = id, nome = nome, idade = idade)
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            SELECT id, nome, idade FROM pessoas
+            WHERE id = ?
+        """, (id,)
+        )
+            dados = cursor.fetchone()
+            if dados is None:
+                return None
+            id, nome, idade = dados
+            return Pessoa(id = id, nome = nome, idade = idade)
 
     def buscar_por_nome(self, nome:str) -> Pessoa | None:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                SELECT id, nome, idade FROM pessoas
-                WHERE nome = ?
-            """, (nome,)
-            )
-                dados = cursor.fetchone()
-                if dados is None:
-                    return None
-                id, nome, idade = dados
-                return Pessoa(id = id, nome = nome, idade = idade)
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            SELECT id, nome, idade FROM pessoas
+            WHERE nome = ?
+        """, (nome,)
+        )
+            dados = cursor.fetchone()
+            if dados is None:
+                return None
+            id, nome, idade = dados
+            return Pessoa(id = id, nome = nome, idade = idade)
 
     def atualizar(self, pessoa:Pessoa) -> None:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                UPDATE pessoas
-                SET nome = ?, idade = ?
-                WHERE id = ?
-            """, (pessoa.nome, pessoa.idade, pessoa.id)
-            )
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            UPDATE pessoas
+            SET nome = ?, idade = ?
+            WHERE id = ?
+        """, (pessoa.nome, pessoa.idade, pessoa.id)
+        )
 
     def excluir(self, id:int) -> bool:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                DELETE FROM pessoas
-                WHERE id = ?
-            """, (id,)
-            )
-            if cursor.rowcount == 0:
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            DELETE FROM pessoas
+            WHERE id = ?
+        """, (id,)
+        )
+        if cursor.rowcount == 0:
+            return False
+        return True
+
+    def existe_nome_em_outro_id(self, id:int, nome_novo:str) -> bool:
+        with ConexaoBanco() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("""
+            SELECT nome FROM pessoas
+            WHERE id <> ? AND nome = ?
+        """, (id, nome_novo))
+            dado = cursor.fetchone()
+            if dado is None:
                 return False
             return True
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
-
-    def buscar_para_atualizar(self, id:int, nome_novo:str) -> bool:
-        try:
-            with ConexaoBanco() as conexao:
-                cursor = conexao.cursor()
-                cursor.execute("""
-                SELECT nome FROM pessoas
-                WHERE id <> ? AND nome = ?
-            """, (id, nome_novo))
-                dado = cursor.fetchone()
-                if dado is None:
-                    return False
-                return True
-        except sqlite3.Error as erro:
-            raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro

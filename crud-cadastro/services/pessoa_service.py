@@ -41,4 +41,4 @@ class PessoaService:
 
     def _nome_ja_existe_atualizar(self, id:int, nome_novo:str) -> bool:
         nome_novo = Pessoa.normalizar_nome(nome_novo)
-        return self.repository.buscar_para_atualizar(id, nome_novo)
+        return self.repository.existe_nome_em_outro_id(id, nome_novo)
