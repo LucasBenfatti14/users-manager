@@ -1,184 +1,330 @@
-<h1 align="center">📋 Gerenciador de Usuários CLI</h1>
+<h1 align="center">📋 Users Manager</h1>
 
 <p align="center">
-  💻 Sistema CRUD desenvolvido em Python para gerenciamento de pessoas <br>
-  🗄️ Persistência em SQLite com arquitetura em camadas e separação de responsabilidades
+  💻 CRUD em Python para gerenciamento de pessoas<br>
+  🌐 API REST com FastAPI e interface CLI<br>
+  🗄️ SQLite com arquitetura em camadas
 </p>
 
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=700&lines=CRUD+em+Python...;Banco+de+Dados+SQLite...;Arquitetura+em+Camadas...;Regras+de+Negócio...;Injeção+de+Dependência..." />
+  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=800&lines=CRUD+em+Python...;API+REST+com+FastAPI...;SQLite...;Arquitetura+em+Camadas...;Regras+de+Negócio...;DTOs+com+Pydantic...;Tratamento+de+Exceções" />
 </p>
 
 ---
 
 ## 🚀 Sobre o projeto
 
-O **Gerenciador de Usuários CLI** é um sistema CRUD desenvolvido em Python para gerenciamento de pessoas através de uma interface de linha de comando.
+O **Users Manager** é uma aplicação CRUD desenvolvida em Python para gerenciamento de pessoas.
 
-A aplicação permite **cadastrar, listar, buscar, atualizar e excluir** registros armazenados em um banco de dados SQLite, utilizando SQL para as operações de persistência.
+O projeto começou como uma aplicação **CLI** e evoluiu para uma **API REST com FastAPI**, mantendo a mesma camada de domínio e regras de negócio.
 
-O projeto foi estruturado utilizando **arquitetura em camadas**, separando responsabilidades entre interface, domínio, regras de negócio e acesso a dados.
+A aplicação possui:
 
-Durante o desenvolvimento, foram aplicados conceitos de **Programação Orientada a Objetos, separação de responsabilidades, injeção de dependência, validação de dados, normalização e exceções personalizadas**.
+* Cadastro, consulta, atualização e exclusão de pessoas;
+* Atualização completa e parcial;
+* Validação e normalização de dados;
+* Regras de negócio centralizadas;
+* Persistência em SQLite;
+* Tratamento de exceções;
+* API REST com documentação OpenAPI.
 
-Trata-se de um projeto **100% autoral**, desenvolvido com o objetivo de aprofundar conhecimentos em Python, bancos de dados relacionais, SQL, arquitetura de software e boas práticas de desenvolvimento.
+O principal objetivo é aplicar conceitos de **desenvolvimento backend, Programação Orientada a Objetos e arquitetura de software** em um projeto evolutivo e prático.
 
 ---
 
-## 🖥️ Tecnologias utilizadas
+## 🛠️ Tecnologias
 
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=python,sqlite" />
+  <img src="https://skillicons.dev/icons?i=python,fastapi,sqlite,git,github" />
 </p>
 
 * **Python**
-* **SQLite**
-* **SQL**
-* **Git/GitHub**
+* **FastAPI**
+* **Pydantic**
+* **SQLite / SQL**
+* **Uvicorn**
+* **Git / GitHub**
 
 ---
 
 ## 🎯 Funcionalidades
 
-* 👤 Cadastro de novas pessoas
-* 📋 Listagem de pessoas cadastradas
-* 🔍 Busca de pessoa por ID
-* ✏️ Atualização de cadastro
-* 🗑️ Exclusão de cadastro
-* 💾 Persistência de dados em SQLite
-* 🗄️ Criação automática da tabela
-* 🔐 Consultas SQL parametrizadas
-* ✅ Validação de dados
-* ✨ Normalização de nomes
-* ⚠️ Exceções personalizadas
-* 🔄 Tratamento de erros de banco de dados
-* 🧩 Arquitetura em camadas
-* 💉 Injeção de dependência
+### 👤 Pessoas
+
+| Método   | Endpoint        | Descrição              |
+| -------- | --------------- | ---------------------- |
+| `GET`    | `/pessoas`      | Lista pessoas          |
+| `GET`    | `/pessoas/{id}` | Busca por ID           |
+| `POST`   | `/pessoas`      | Cadastra uma pessoa    |
+| `PUT`    | `/pessoas/{id}` | Atualiza completamente |
+| `PATCH`  | `/pessoas/{id}` | Atualiza parcialmente  |
+| `DELETE` | `/pessoas/{id}` | Remove uma pessoa      |
+
+A API utiliza códigos HTTP apropriados, incluindo `200`, `201`, `204`, `404`, `409`, `422` e `500`.
 
 ---
 
 ## 🏗️ Arquitetura
 
-A aplicação utiliza uma arquitetura em camadas para separar responsabilidades:
+O projeto utiliza uma arquitetura em camadas para separar responsabilidades e reduzir o acoplamento.
 
 ```text
-Interface
-    ↓
-Main
-    ↓
-Service
-    ↓
-DAO
-    ↓
-SQLite
+                ┌──────────────────┐
+                │   CLI / HTTP     │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │  API / FastAPI   │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │   PessoaService  │
+                │ Regras de negócio│
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │    Repository    │
+                │   Persistência   │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │      SQLite      │
+                └──────────────────┘
+
+                ┌──────────────────┐
+                │      Domain      │
+                │     Pessoa       │
+                └──────────────────┘
 ```
 
-### 📂 Camadas
+### `domain/`
 
-**`interface/`**
-Responsável pela interação com o usuário, entrada de dados, menus e apresentação das informações.
+Contém as entidades e comportamentos do domínio, incluindo validação, normalização e controle do estado de `Pessoa`.
 
-**`domain/`**
-Contém as entidades do domínio utilizadas pela aplicação, como `Pessoa`.
+### `services/`
 
-**`services/`**
-Responsável pelas regras de negócio, validações, normalização e orquestração das operações.
+Responsável pela orquestração das regras de negócio através do `PessoaService`.
 
-**`database/`**
-Responsável pela persistência dos dados e comunicação direta com o SQLite através do DAO.
+### `repositories/`
 
-**`exceptions/`**
-Centraliza as exceções específicas da aplicação, permitindo que diferentes tipos de erro sejam tratados adequadamente.
+Define a abstração de persistência, mantendo a camada de negócio independente da implementação do banco.
 
-**`main.py`**
-Coordena o fluxo da aplicação e conecta as diferentes camadas.
+### `database/`
+
+Contém a implementação de persistência utilizando SQLite, SQL e gerenciamento de conexões.
+
+### `api/`
+
+Responsável pela interface HTTP, validação dos dados, rotas, respostas e tradução de exceções para HTTP.
+
+### `exceptions/`
+
+Centraliza as exceções de domínio, negócio e infraestrutura.
 
 ---
 
-## 🧠 Conceitos aplicados
+## 📦 DTOs
 
-* Programação Orientada a Objetos (POO)
-* Entidades e modelagem de domínio
-* CRUD
-* Persistência de dados
-* SQL e banco de dados relacional
-* Data Access Object (DAO)
+Os DTOs representam os dados transportados pela API sem expor diretamente as entidades do domínio.
+
+```python
+class PessoaCreate(BaseModel):
+    nome: str
+    idade: int
+```
+
+```python
+class PessoaResponse(BaseModel):
+    id: int
+    nome: str
+    idade: int
+```
+
+Também existe o `PessoaPatch`, utilizado em atualizações parciais.
+
+A separação entre **DTO** e **Domain Entity** permite manter a API desacoplada da implementação interna.
+
+---
+
+## 🧠 Regras de negócio
+
+As regras são mantidas fora da camada HTTP.
+
+Entre elas:
+
+* Validação e normalização do nome;
+* Validação da idade;
+* Verificação de duplicidade;
+* Controle do ID;
+* Validação de atualizações parciais.
+
+Dessa forma:
+
+```text
+DTO
+ ↓
+Domain
+ ↓
+Service
+ ↓
+Repository
+ ↓
+Database
+```
+
+Cada camada possui uma responsabilidade específica.
+
+---
+
+## ⚠️ Tratamento de exceções
+
+A aplicação utiliza exceções personalizadas e handlers globais.
+
+Exemplos:
+
+```text
+DominioError
+RegraDeNegocioError
+BancoDeDadosError
+PessoaJaCadastradaError
+NomeInvalidoError
+IdadeInvalidaError
+```
+
+Essas exceções são convertidas pela API em respostas HTTP adequadas, evitando expor detalhes internos da aplicação ou do banco.
+
+---
+
+## 🧩 Conceitos aplicados
+
+O projeto consolida conhecimentos em:
+
+**Python**
+
+* POO
+* Encapsulamento
+* Properties
+* Type Hints
+* Exceções
+* Context Managers
+
+**Arquitetura**
+
+* Layered Architecture
 * Service Layer
-* Arquitetura em camadas
+* Repository Pattern
+* DAO
+* Dependency Injection
 * Separação de responsabilidades
-* Injeção de dependência
-* Regras de negócio
-* Validação e normalização de dados
-* Exceções personalizadas
-* Encapsulamento de detalhes de infraestrutura
-* Consultas parametrizadas
-* Gerenciamento de recursos com `with`
+
+**Banco de dados**
+
+* SQLite
+* SQL
+* CRUD
+* Queries parametrizadas
+* Transações
+
+**API**
+
+* HTTP
+* REST
+* JSON
+* Status Codes
+* Pydantic
+* OpenAPI
+* Exception Handlers
 
 ---
 
-## 📚 Aprendizados
-
-Durante o desenvolvimento, o projeto foi evoluindo de uma aplicação simples para uma estrutura mais próxima de aplicações profissionais.
-
-Entre os principais aprendizados estão:
-
-* Separar regras de negócio do código de interface.
-* Evitar que a aplicação dependa diretamente da tecnologia de banco utilizada.
-* Utilizar entidades para representar conceitos do domínio.
-* Centralizar o acesso aos dados através do DAO.
-* Utilizar injeção de dependência para reduzir acoplamento.
-* Criar exceções específicas para diferentes situações de erro.
-* Diferenciar ausência de dados, falha operacional e exceções.
-* Validar e normalizar dados antes da persistência.
-* Organizar o código visando manutenção, legibilidade e evolução.
-
----
-
-## 🌐 Como executar
+## ▶️ Como executar
 
 ### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/LucasBenfatti14/users-manager
-```
-
-### 2. Acesse a pasta
-
-```bash
 cd users-manager
 ```
 
-### 3. Execute a aplicação
+### 2. Crie e ative o ambiente virtual
+
+**Windows:**
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+### 3. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Execute a CLI
 
 ```bash
 python main.py
 ```
 
-O banco SQLite e a tabela necessária são preparados automaticamente durante a inicialização da aplicação.
+### 5. Execute a API
+
+```bash
+uvicorn api.main:app --reload
+```
+
+API:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+OpenAPI:
+
+```text
+http://127.0.0.1:8000/openapi.json
+```
 
 ---
 
 ## 🚧 Próximos passos
 
-* 🧪 Implementar testes automatizados
-* 📝 Adicionar logging da aplicação
-* 🔄 Implementar Repository Pattern
-* 🔐 Aprimorar regras de negócio e validações
-* 🌐 Criar uma API REST utilizando FastAPI
-* 📦 Melhorar configuração e gerenciamento do projeto
+* Testes unitários e de integração com **Pytest**;
+* PostgreSQL e migrações;
+* Logging e configuração por ambiente;
+* Autenticação e autorização com JWT;
+* Docker e Docker Compose;
+* CI/CD com GitHub Actions;
+* Paginação, filtros e ordenação;
+* Evolução para Clean Architecture / Ports and Adapters.
 
 ---
 
 ## 👨‍💻 Autor
 
 <p align="center">
-  Lucas Benfatti <br>
-  📍 Santos - SP
+  <strong>Lucas Benfatti</strong><br>
+  📍 Santos - SP, Brasil
 </p>
-
----
 
 <p align="center">
   🚀 Projeto em constante evolução
