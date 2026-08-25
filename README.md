@@ -1,4 +1,4 @@
-<h1 align="center">📋 Users Manager</h1>
+<h1 align="center">📋 Gerenciador de usuários</h1>
 
 <p align="center">
   💻 CRUD em Python para gerenciamento de pessoas<br>
