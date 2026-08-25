@@ -3,7 +3,7 @@ from database import criar_tabela
 from database import PessoaDAO
 from services import PessoaService
 from domain import Pessoa
-from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError)
+from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError)
 
 def main():
     pessoa_repository = PessoaDAO()
@@ -41,6 +41,8 @@ def main():
                     formatar_erro("O nome informado está incompleto.")
                 except NomeComCaracteresInvalidosError:
                     formatar_erro("O nome informado possui caracteres inválidos.")
+                except IdJaDefinidoError:
+                    formatar_erro("O id desse usuário já foi definido e não pode ser alterado.")
                 except NomeInvalidoError:
                     formatar_erro("O nome informado é inválido.")
                 except IdadeInvalidaError:

@@ -1,55 +1,53 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse, Response
 from database import criar_tabela
-from database import PessoaDAO
 from services import PessoaService
-from api.models import PessoaResponse, PessoaCreate, PessoaPatch
+from .models import PessoaResponse, PessoaPatch, PessoaCreate
 from domain import Pessoa
 from exceptions import BancoDeDadosError, DominioError, RegraDeNegocioError
+from .dependencies import get_service
 
 app = FastAPI()
 
-pessoa_repository = PessoaDAO()
-pessoa_service = PessoaService(pessoa_repository)
 try:
     criar_tabela()
 except BancoDeDadosError:
     raise SystemExit
 
 @app.get("/pessoas", status_code=200)
-def listar_pessoas() -> list[PessoaResponse]:
-    pessoas = pessoa_service.listar()
+def listar_pessoas(service:PessoaService = Depends(get_service)) -> list[PessoaResponse]:
+    pessoas = service.listar()
     lista = []
     for pessoa in pessoas:
         lista.append(to_response(pessoa))
     return lista
 
 @app.post("/pessoas", status_code=201)
-def cadastrar_pessoa(dados:PessoaCreate) -> PessoaResponse:
+def cadastrar_pessoa(dados:PessoaCreate, service:PessoaService = Depends(get_service)) -> PessoaResponse:
     pessoa = Pessoa(id=None, nome=dados.nome, idade=dados.idade)
-    id_gerado = pessoa_service.cadastrar(pessoa)
+    id_gerado = service.cadastrar(pessoa)
     pessoa.registrar_persistencia(id_gerado)
     return to_response(pessoa)
 
 @app.put("/pessoas/{id}", status_code=200)
-def atualizar_pessoa(id:int, dados:PessoaCreate) -> PessoaResponse:
-    pessoa = pessoa_service.buscar(id)
+def atualizar_pessoa(id:int, dados:PessoaCreate, service:PessoaService = Depends(get_service)) -> PessoaResponse:
+    pessoa = service.buscar(id)
     if pessoa is None:
         return JSONResponse(status_code=404, content={"detail": "Não existe nenhuma pessoa com esse ID."})
-    pessoa_service.atualizar(pessoa, dados.nome, dados.idade)
+    service.atualizar(pessoa, dados.nome, dados.idade)
     return to_response(pessoa)
 
 @app.patch("/pessoas/{id}", status_code=200)
-def atualizar_pessoa_parcialmente(id:int, dados:PessoaPatch) -> PessoaResponse:
-    pessoa = pessoa_service.buscar(id)
+def atualizar_pessoa_parcialmente(id:int, dados:PessoaPatch, service:PessoaService = Depends(get_service)) -> PessoaResponse:
+    pessoa = service.buscar(id)
     if pessoa is None:
         return JSONResponse(status_code=404, content={"detail": "Não existe nenhuma pessoa com esse ID."})
-    pessoa_service.atualizar_parcialmente(pessoa, dados.nome, dados.idade)
+    service.atualizar_parcialmente(pessoa, dados.nome, dados.idade)
     return to_response(pessoa)
 
 @app.delete("/pessoas/{id}", status_code=204)
-def excluir_pessoa(id:int) -> Response:
-    if not pessoa_service.excluir(id):
+def excluir_pessoa(id:int, service:PessoaService = Depends(get_service)) -> Response:
+    if not service.excluir(id):
         return JSONResponse(status_code=404, content={"detail": "Não existe nenhuma pessoa com esse ID."})
     return Response(status_code=204)
 

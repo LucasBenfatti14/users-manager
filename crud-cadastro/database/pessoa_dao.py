@@ -72,9 +72,9 @@ class PessoaDAO(PessoaRepository):
             WHERE id = ?
         """, (id,)
         )
-        if cursor.rowcount == 0:
-            return False
-        return True
+            if cursor.rowcount == 0:
+                return False
+            return True
 
     def existe_nome_em_outro_id(self, id:int, nome_novo:str) -> bool:
         with ConexaoBanco() as conexao:

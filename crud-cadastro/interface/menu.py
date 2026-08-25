@@ -2,6 +2,14 @@ from domain import Pessoa
 from time import sleep
 import os
 
+TAMANHO_PADRAO_LINHA = 50
+ESPACO_MAX_PARA_NOME = 38
+ESPACO_MAX_PARA_IDADE = 3
+MENOR_OPCAO = 0
+MAIOR_OPCAO = 5
+TEMPO_PARA_RETORNAR_AO_MENU = 1
+TEMPO_PARA_ENCERRAR_EXECUCAO = 1.5
+
 ANSI = {
     "preto": "\033[30m",
     "vermelho": "\033[31m",
@@ -26,10 +34,10 @@ ANSI = {
     "sublinhado": "\033[4m"
 }
 
-def linha(tam:int=50) -> None:
+def linha(tam:int=TAMANHO_PADRAO_LINHA) -> None:
     print("-" * tam)
 
-def titulo(msg:str, tam:int=50) -> None:
+def titulo(msg:str, tam:int=TAMANHO_PADRAO_LINHA) -> None:
     linha(tam)
     print(f"{ANSI['negrito']}{ANSI['bg_ciano']}{msg.center(tam)}{ANSI['reset']}")
     linha(tam)
@@ -53,10 +61,10 @@ def mensagem_sem_cadastros() -> None:
 
 def mostrar_cadastros(pessoas:list[Pessoa]) -> None:
     for pessoa in pessoas:
-        print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
+        mostrar_cadastro_unico(pessoa)
 
 def mostrar_cadastro_unico(pessoa:Pessoa) -> None:
-    print(f"{pessoa.id} - {pessoa.nome:<40}{pessoa.idade:>3} anos")
+    print(f"{pessoa.id} - {pessoa.nome:<{ESPACO_MAX_PARA_NOME}}{pessoa.idade:>{ESPACO_MAX_PARA_IDADE}} anos")
 
 def mensagem_cadastro_realizado(nome:str) -> None:
     print(f"{ANSI['bg_verde']}Novo registro adicionado: {ANSI['negrito']}{ANSI['sublinhado']}{nome} {ANSI['reset']}")
@@ -74,7 +82,7 @@ def ler_int(txt:str) -> int:
             return inteiro
         except KeyboardInterrupt:
             formatar_erro("O usuário optou por não inserir um número!")
-            return 0
+            raise SystemExit
         except ValueError:
             formatar_erro("Digite um número inteiro válido!")
 
@@ -97,7 +105,7 @@ def ler_nome() -> str:
 def pedir_opcao() -> int:
     while True:
         opc = ler_int("Sua Opção: ")
-        if opc < 0 or opc > 5:
+        if opc < MENOR_OPCAO or opc > MAIOR_OPCAO:
             formatar_erro("Digite uma opção válida.")
         else:
             return opc    
@@ -112,7 +120,7 @@ def ler_id() -> int:
 
 def sair() -> None:
     titulo("Saindo do sistema... Até logo!!")
-    sleep(1.5)
+    sleep(TEMPO_PARA_ENCERRAR_EXECUCAO)
 
 def limpar_terminal() -> None:
     if os.name == "nt":
@@ -121,5 +129,5 @@ def limpar_terminal() -> None:
         os.system("clear")
 
 def retornar() -> None:
-    sleep(1)
+    sleep(TEMPO_PARA_RETORNAR_AO_MENU)
     input(f"{ANSI['verde']}Pressione ENTER para voltar ao menu{ANSI['reset']} ")

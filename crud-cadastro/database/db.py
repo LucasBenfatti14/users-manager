@@ -1,6 +1,6 @@
 from .conexao import ConexaoBanco
 
-def criar_tabela() -> bool:
+def criar_tabela() -> None:
     with ConexaoBanco() as conexao:
         cursor = conexao.cursor()
         cursor.execute("""
@@ -10,4 +10,3 @@ def criar_tabela() -> bool:
             idade INTEGER NOT NULL
         )
     """)
-        return True

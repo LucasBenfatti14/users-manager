@@ -1,5 +1,12 @@
 from exceptions import (NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError, NomeEIdadeNaoFornecidos)
 
+TAMANHO_MIN_PRIMEIRO_NOME = 3
+TAMANHO_MAX_PRIMEIRO_NOME = 32
+TAMANHO_MIN_SOBRENOME = 2
+TAMANHO_MAX_SOBRENOME = 50
+IDADE_MINIMA_PERMITIDA = 0
+IDADE_MAXIMA_PERMITIDA = 130
+
 class Pessoa:
 
     def __init__(self, id:int | None, nome:str, idade:int) -> None:
@@ -38,10 +45,10 @@ class Pessoa:
                 if not nome_pessoa.isalpha():
                     raise NomeComCaracteresInvalidosError("O nome informado possui caracteres inválidos.")
                 if i == 0:
-                    if len(nome_pessoa) < 3 or len(nome_pessoa) > 32:
+                    if len(nome_pessoa) < TAMANHO_MIN_PRIMEIRO_NOME or len(nome_pessoa) > TAMANHO_MAX_PRIMEIRO_NOME:
                         raise NomeInvalidoError("O nome informado é inválido.")
                 else:
-                    if len(nome_pessoa) < 2 or len(nome_pessoa) > 50:
+                    if len(nome_pessoa) < TAMANHO_MIN_SOBRENOME or len(nome_pessoa) > TAMANHO_MAX_SOBRENOME:
                         raise NomeInvalidoError("O nome informado é inválido.")
 
     @staticmethod
@@ -56,7 +63,7 @@ class Pessoa:
             return nome
 
     def _validar_idade(self, idade:int) -> None:
-            if idade < 0 or idade >= 150:
+            if idade < IDADE_MINIMA_PERMITIDA or idade > IDADE_MAXIMA_PERMITIDA:
                 raise IdadeInvalidaError("A idade informada é inválida.")
 
     def registrar_persistencia(self, id_gerado:int) -> None:
