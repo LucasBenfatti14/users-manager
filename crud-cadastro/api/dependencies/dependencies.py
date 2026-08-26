@@ -1,7 +1,7 @@
 from fastapi import Depends
 from repositories import PessoaRepository
 from services import PessoaService
-from database import PessoaDAO
+from database.postgres import PessoaDAO
 
 def get_repository() -> PessoaRepository:
     return PessoaDAO()

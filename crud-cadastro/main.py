@@ -1,6 +1,6 @@
 from interface import (mostrar_menu, pedir_opcao, sair, linha, retornar, titulo, ler_id, mostrar_cadastros, mensagem_cadastro_realizado, formatar_erro, mensagem_alteracao_realizada, mensagem_exclusao_realizada, mensagem_sem_cadastros, mostrar_cadastro_unico, ler_nome, ler_idade)
-from database import criar_tabela
-from database import PessoaDAO
+from database.postgres import criar_tabela
+from database.postgres import PessoaDAO
 from services import PessoaService
 from domain import Pessoa
 from exceptions import (BancoDeDadosError, PessoaJaCadastradaError, NomeInvalidoError, NomeIncompletoError, NomeComCaracteresInvalidosError, IdadeInvalidaError, IdJaDefinidoError)

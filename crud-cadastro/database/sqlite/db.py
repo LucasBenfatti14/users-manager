@@ -8,5 +8,5 @@ def criar_tabela() -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
             idade INTEGER NOT NULL
-        )
+        );
     """)

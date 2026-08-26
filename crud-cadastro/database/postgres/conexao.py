@@ -1,18 +1,23 @@
-import sqlite3
-from pathlib import Path
+import psycopg
 from exceptions import BancoDeDadosError
+import os
+from dotenv import load_dotenv
 
-class ConexaoBanco:
+load_dotenv()
 
-    def __init__(self, banco:str="pessoas.db") -> None:
-        raiz_projeto = Path(__file__).resolve().parent.parent
-        self.banco = raiz_projeto / banco
+class ConexaoPostgres:
 
-    def __enter__(self) -> sqlite3.Connection:
+    def __enter__(self) -> psycopg.Connection:
         try:
-            self.conexao = sqlite3.connect(self.banco)
+            self.conexao = psycopg.connect(
+                host=os.environ["POSTGRES_HOST"],
+                port=os.environ["POSTGRES_PORT"],
+                dbname=os.environ["POSTGRES_DB"],
+                user=os.environ["POSTGRES_USER"],
+                password=os.environ["POSTGRES_PASSWORD"]
+            )
             return self.conexao
-        except sqlite3.Error as erro:
+        except psycopg.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
 
     def __exit__(self, tipo, valor, traceback):
@@ -21,9 +26,9 @@ class ConexaoBanco:
                 self.conexao.commit()
             else:
                 self.conexao.rollback()
-                if isinstance(valor, sqlite3.Error):
+                if isinstance(valor, psycopg.Error):
                     raise BancoDeDadosError("Erro ao acessar o banco de dados.") from valor
-        except sqlite3.Error as erro:
+        except psycopg.Error as erro:
             raise BancoDeDadosError("Erro ao acessar o banco de dados.") from erro
         finally:
             self.conexao.close()

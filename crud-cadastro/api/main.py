@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse, Response
-from database import criar_tabela
+from database.postgres import criar_tabela
 from services import PessoaService
 from .models import PessoaResponse, PessoaPatch, PessoaCreate
 from domain import Pessoa
@@ -21,6 +21,13 @@ def listar_pessoas(service:PessoaService = Depends(get_service)) -> list[PessoaR
     for pessoa in pessoas:
         lista.append(to_response(pessoa))
     return lista
+
+@app.get("/pessoas/{id}", status_code=200)
+def buscar_pessoa(id:int, service:PessoaService = Depends(get_service)) -> PessoaResponse:
+    pessoa = service.buscar(id)
+    if pessoa is None:
+        return JSONResponse(status_code=404, content={"detail": "Não existe nenhuma pessoa com esse ID."})
+    return to_response(pessoa)
 
 @app.post("/pessoas", status_code=201)
 def cadastrar_pessoa(dados:PessoaCreate, service:PessoaService = Depends(get_service)) -> PessoaResponse:
