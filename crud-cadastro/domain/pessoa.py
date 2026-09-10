@@ -49,7 +49,7 @@ class Pessoa:
                         raise NomeInvalidoError("O nome informado é inválido.")
                 else:
                     if len(nome_pessoa) < TAMANHO_MIN_SOBRENOME or len(nome_pessoa) > TAMANHO_MAX_SOBRENOME:
-                        raise NomeInvalidoError("O nome informado é inválido.")
+                        raise NomeInvalidoError("O sobrenome informado é inválido.")
 
     @staticmethod
     def normalizar_nome(nome:str) -> str:
