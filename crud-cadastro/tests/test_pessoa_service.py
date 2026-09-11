@@ -35,3 +35,17 @@ def test_pessoa_service_lista_pessoas() -> None:
     pessoa_2.registrar_persistencia(fake_id)
     lista_pessoas = pessoa_service.listar()
     assert lista_pessoas == lista_pessoas_esperada
+
+def test_pessoa_service_busca_e_encontra_pessoa() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    pessoa = Pessoa(None, "Lucas Benfatti", 18)
+    fake_id = pessoa_service.cadastrar(pessoa)
+    pessoa.registrar_persistencia(fake_id)
+    pessoa_encontrada = pessoa_service.buscar(1)
+    assert pessoa_encontrada == pessoa
+
+def test_pessoa_service_busca_e_nao_encontra_pessoa() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    assert pessoa_service.buscar(1) is None
