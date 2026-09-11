@@ -69,3 +69,16 @@ def test_pessoa_service_rejeita_atualizacao_de_pessoa_com_nome_duplicado() -> No
     pessoa_1.registrar_persistencia(fake_id)
     with pytest.raises(PessoaJaCadastradaError):
         pessoa_service.atualizar(pessoa_2, "Lucas Benfatti", 40)
+
+def test_pessoa_service_exclui_pessoa_existente() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    pessoa = Pessoa(None, "Lucas Benfatti", 18)
+    fake_id = pessoa_service.cadastrar(pessoa)
+    pessoa.registrar_persistencia(fake_id)
+    assert pessoa_service.excluir(1) is True
+
+def test_pessoa_service_nao_exclui_pessoa_nao_existente() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    assert pessoa_service.excluir(1) is False
