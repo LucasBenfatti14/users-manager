@@ -82,3 +82,33 @@ def test_pessoa_service_nao_exclui_pessoa_nao_existente() -> None:
     fake_repository = FakeRepository()
     pessoa_service = PessoaService(fake_repository)
     assert pessoa_service.excluir(1) is False
+
+def test_pessoa_service_aceita_atualizacao_parcial_do_nome_de_pessoa() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    pessoa = Pessoa(None, "Luc Benfatti", 18)
+    fake_id = pessoa_service.cadastrar(pessoa)
+    pessoa.registrar_persistencia(fake_id)
+    pessoa_service.atualizar_parcialmente(pessoa, "Lucas Benfatti", None)
+    pessoa_encontrada = pessoa_service.buscar(1)
+    assert pessoa_encontrada.nome == "Lucas Benfatti" and pessoa_encontrada.idade == 18
+
+def test_pessoa_service_aceita_atualizacao_parcial_da_idade_de_pessoa() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    pessoa = Pessoa(None, "Lucas Benfatti", 20)
+    fake_id = pessoa_service.cadastrar(pessoa)
+    pessoa.registrar_persistencia(fake_id)
+    pessoa_service.atualizar_parcialmente(pessoa, None, 18)
+    pessoa_encontrada = pessoa_service.buscar(1)
+    assert pessoa_encontrada.idade == 18 and pessoa_encontrada.nome == "Lucas Benfatti"
+
+def test_pessoa_service_rejeita_atualizacao_parcial_do_nome_de_pessoa_ja_existente() -> None:
+    fake_repository = FakeRepository()
+    pessoa_service = PessoaService(fake_repository)
+    pessoa_1 = Pessoa(None, "Lucas Benfatti", 18)
+    fake_id = pessoa_service.cadastrar(pessoa_1)
+    pessoa_1.registrar_persistencia(fake_id)
+    pessoa_2 = Pessoa(None, "John Doe", 40)
+    with pytest.raises(PessoaJaCadastradaError):
+        pessoa_service.atualizar_parcialmente(pessoa_2, "Lucas Benfatti", None)
