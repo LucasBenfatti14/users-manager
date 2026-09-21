@@ -9,7 +9,7 @@
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=800&lines=CRUD+em+Python...;API+REST+com+FastAPI...;PostgreSQL...;Arquitetura+em+Camadas...;Regras+de+Negócio...;DTOs+com+Pydantic...;Tratamento+de+Exceções" />
+  <img src="https://readme-typing-svg.herokuapp.com/?color=00FF00&size=22&center=true&vCenter=true&width=800&lines=CRUD+em+Python...;API+REST+com+FastAPI...;PostgreSQL...;Arquitetura+em+Camadas...;Regras+de+Negócio...;DTOs+com+Pydantic...;Testes+automatizados...;Tratamento+de+Exceções" />
 </p>
 
 ---
@@ -19,6 +19,8 @@
 O **Users Manager** é uma aplicação CRUD desenvolvida em Python para gerenciamento de pessoas.
 
 O projeto evoluiu de uma aplicação **CLI** para uma **API REST com FastAPI**, mantendo o domínio e as regras de negócio independentes das interfaces de acesso.
+
+A aplicação foi estruturada com separação de responsabilidades entre domínio, serviços, repositórios, persistência, interfaces e testes.
 
 Principais recursos:
 
@@ -31,16 +33,17 @@ Principais recursos:
 * Tratamento de exceções personalizadas;
 * Injeção de dependências;
 * DTOs com Pydantic;
-* Documentação automática com OpenAPI/Swagger.
+* Documentação automática com OpenAPI/Swagger;
+* Testes automatizados para domínio, serviços e API.
 
-O projeto tem como objetivo consolidar conhecimentos em **Python, desenvolvimento backend, APIs REST, bancos de dados e arquitetura de software**.
+O projeto tem como objetivo consolidar conhecimentos em **Python, desenvolvimento backend, APIs REST, bancos de dados, testes automatizados e arquitetura de software**.
 
 ---
 
 ## 🛠️ Tecnologias
 
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=python,fastapi,postgres,sqlite,git,github" />
+  <img src="https://skillicons.dev/icons?i=python,fastapi,postgres,sqlite,git,github,pytest" />
 </p>
 
 * **Python**
@@ -51,6 +54,7 @@ O projeto tem como objetivo consolidar conhecimentos em **Python, desenvolviment
 * **Psycopg**
 * **Uvicorn**
 * **python-dotenv**
+* **Pytest**
 * **Git / GitHub**
 
 ---
@@ -68,7 +72,17 @@ O projeto tem como objetivo consolidar conhecimentos em **Python, desenvolviment
 | `PATCH`  | `/pessoas/{id}` | Atualiza parcialmente uma pessoa  |
 | `DELETE` | `/pessoas/{id}` | Remove uma pessoa                 |
 
-A API utiliza códigos HTTP adequados para representar o resultado das operações, como `200`, `201`, `204`, `404`, `409`, `422` e `500`.
+A API utiliza códigos HTTP adequados para representar o resultado das operações:
+
+| Código | Descrição                                      |
+| ------ | ---------------------------------------------- |
+| `200`  | Operação realizada com sucesso                 |
+| `201`  | Pessoa cadastrada com sucesso                  |
+| `204`  | Pessoa excluída com sucesso                   |
+| `404`  | Pessoa não encontrada                          |
+| `409`  | Conflito de regra de negócio                  |
+| `422`  | Dados inválidos ou erro de domínio            |
+| `500`  | Erro interno ou falha de infraestrutura       |
 
 ---
 
@@ -101,7 +115,7 @@ O projeto utiliza uma **arquitetura em camadas**, separando domínio, regras de 
                              ▼
                     ┌──────────────────┐
                     │    PessoaDAO     │
-                    │   PostgreSQL     │
+                    │ PostgreSQL/SQLite│
                     └──────────────────┘
 
                     ┌──────────────────┐
@@ -112,14 +126,16 @@ O projeto utiliza uma **arquitetura em camadas**, separando domínio, regras de 
 
 ### 📂 Estrutura
 
-* **`domain/`** — entidade `Pessoa`, validações, normalização e controle de estado;
-* **`services/`** — regras e orquestração através do `PessoaService`;
-* **`repositories/`** — abstração utilizada pela camada de negócio;
-* **`database/postgres/`** — conexão, criação da tabela e DAO para PostgreSQL;
-* **`database/sqlite/`** — implementação alternativa de persistência com SQLite;
-* **`api/`** — rotas HTTP, DTOs, dependências e handlers;
-* **`interface/`** — interface de linha de comando;
-* **`exceptions/`** — exceções de domínio, negócio e infraestrutura.
+* **`crud-cadastro/domain/`** — entidade `Pessoa`, validações, normalização e controle de estado;
+* **`crud-cadastro/services/`** — regras e orquestração através do `PessoaService`;
+* **`crud-cadastro/repositories/`** — abstração utilizada pela camada de negócio;
+* **`crud-cadastro/database/postgres/`** — conexão, criação da tabela e DAO para PostgreSQL;
+* **`crud-cadastro/database/sqlite/`** — implementação alternativa de persistência com SQLite;
+* **`crud-cadastro/api/`** — rotas HTTP, DTOs, dependências e handlers;
+* **`crud-cadastro/interface/`** — interface de linha de comando;
+* **`crud-cadastro/exceptions/`** — exceções de domínio, negócio e infraestrutura;
+* **`crud-cadastro/tests/`** — testes de domínio, serviços e API;
+* **`crud-cadastro/main.py`** — ponto de entrada da aplicação CLI.
 
 A aplicação utiliza **Dependency Injection** para fornecer o Repository ao Service, reduzindo o acoplamento entre negócio e infraestrutura.
 
@@ -144,7 +160,7 @@ class PessoaResponse(BaseModel):
     idade: int
 ```
 
-* `PessoaCreate` — dados necessários para criação;
+* `PessoaCreate` — dados necessários para criação e atualização completa;
 * `PessoaPatch` — dados opcionais para atualização parcial;
 * `PessoaResponse` — estrutura retornada pela API.
 
@@ -159,8 +175,9 @@ A entidade `Pessoa` controla seu próprio estado e realiza validações antes da
 Entre as regras implementadas:
 
 * Nome completo obrigatório;
-* Validação do tamanho dos nomes;
-* Validação de caracteres;
+* Primeiro nome com tamanho entre `3` e `32` caracteres;
+* Sobrenomes com tamanho entre `2` e `50` caracteres;
+* Validação de caracteres alfabéticos;
 * Normalização do nome;
 * Idade entre `0` e `130`;
 * Prevenção de nomes duplicados;
@@ -190,6 +207,10 @@ NomeEIdadeNaoFornecidos
 
 Na API, essas exceções são tratadas por handlers específicos e convertidas em respostas HTTP adequadas, sem expor detalhes internos da aplicação.
 
+* Erros de domínio são convertidos em respostas `422`;
+* Erros de regras de negócio são convertidos em respostas `409`;
+* Erros de banco de dados são convertidos em respostas `500`.
+
 ---
 
 ## 🗄️ Persistência
@@ -204,6 +225,8 @@ As conexões utilizam **Context Managers** para centralizar:
 * `commit`;
 * `rollback`;
 * Tratamento de erros de infraestrutura.
+
+As consultas ao banco utilizam parâmetros, evitando a interpolação direta de valores nas queries.
 
 As credenciais do PostgreSQL são configuradas através de variáveis de ambiente.
 
@@ -229,7 +252,7 @@ PessoaRepository
 PessoaDAO
    │
    ▼
-PostgreSQL
+PostgreSQL / SQLite
 ```
 
 A camada de entrada não acessa diretamente o banco nem concentra regras de negócio.
@@ -240,41 +263,70 @@ A camada de entrada não acessa diretamente o banco nem concentra regras de neg�
 
 **Python**
 
-* Programação Orientada a Objetos
-* Encapsulamento
-* Properties
-* Type Hints
-* Exceções
-* Context Managers
+* Programação Orientada a Objetos;
+* Encapsulamento;
+* Properties;
+* Type Hints;
+* Exceções;
+* Context Managers.
 
 **Arquitetura**
 
-* Layered Architecture
-* Service Layer
-* Repository Pattern
-* DAO
-* Dependency Injection
-* Separação de responsabilidades
-* Baixo acoplamento
+* Layered Architecture;
+* Service Layer;
+* Repository Pattern;
+* DAO;
+* Dependency Injection;
+* Separação de responsabilidades;
+* Baixo acoplamento.
 
 **Banco de dados**
 
-* PostgreSQL
-* SQLite
-* SQL
-* CRUD
-* Queries parametrizadas
-* Transações
+* PostgreSQL;
+* SQLite;
+* SQL;
+* CRUD;
+* Queries parametrizadas;
+* Transações.
 
 **API**
 
-* HTTP
-* REST
-* JSON
-* Status Codes
-* Pydantic
-* OpenAPI / Swagger
-* Exception Handlers
+* HTTP;
+* REST;
+* JSON;
+* Status Codes;
+* Pydantic;
+* OpenAPI / Swagger;
+* Exception Handlers.
+
+**Testes**
+
+* Pytest;
+* Testes unitários;
+* Testes de domínio;
+* Testes de serviço;
+* Testes de API;
+* Fake Repository;
+* Dependency Overrides.
+
+---
+
+## 🧪 Testes
+
+O projeto possui testes automatizados utilizando **Pytest**.
+
+Os testes estão organizados da seguinte forma:
+
+* **`tests/test_pessoa_domain.py`** — validações, normalização de nomes e regras da entidade;
+* **`tests/test_pessoa_service.py`** — regras de negócio, cadastro, busca, atualização e exclusão;
+* **`tests/test_api.py`** — integração com os endpoints da API utilizando `TestClient`;
+* **`tests/fake_repository.py`** — repositório em memória utilizado nos testes.
+
+Para executar todos os testes:
+
+```bash
+pytest
+```
 
 ---
 
@@ -321,6 +373,14 @@ POSTGRES_USER=seu_usuario
 POSTGRES_PASSWORD=sua_senha
 ```
 
+No Linux/macOS, você pode copiar o arquivo de exemplo utilizando:
+
+```bash
+cp .env.example .env
+```
+
+No Windows, copie manualmente o arquivo `.env.example`, renomeie-o para `.env` e preencha as credenciais do banco.
+
 ### 5. Acesse a aplicação
 
 Entre na pasta principal do código:
@@ -359,13 +419,20 @@ OpenAPI:
 http://127.0.0.1:8000/openapi.json
 ```
 
+### 8. Execute os testes
+
+Ainda dentro da pasta `crud-cadastro`, execute:
+
+```bash
+pytest
+```
+
 A tabela `pessoas` é criada automaticamente durante a inicialização da aplicação caso ainda não exista.
 
 ---
 
 ## 🚧 Próximos passos
 
-* Testes unitários e de integração com **Pytest**;
 * Logging e observabilidade;
 * Configuração por ambiente;
 * Autenticação e autorização;
@@ -374,6 +441,7 @@ A tabela `pessoas` é criada automaticamente durante a inicialização da aplica
 * CI/CD com GitHub Actions;
 * Paginação, filtros e ordenação;
 * Padronização de respostas de erro;
+* Expansão dos testes de integração com banco de dados;
 * Evolução para Clean Architecture / Ports and Adapters.
 
 ---
@@ -382,7 +450,7 @@ A tabela `pessoas` é criada automaticamente durante a inicialização da aplica
 
 <p align="center">
   <strong>Lucas Benfatti</strong><br>
-  📍 Santos - SP, Brasil
+  📍 SP - Brasil
 </p>
 
 <p align="center">
