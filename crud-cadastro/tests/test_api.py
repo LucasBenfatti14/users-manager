@@ -3,15 +3,24 @@ from services import PessoaService
 from api.main import app
 from api.dependencies import get_service
 from fastapi.testclient import TestClient
+import pytest
 
-def get_fake_service() -> PessoaService:
+@pytest.fixture
+def fake_repository():
     fake_repository = FakeRepository()
-    return PessoaService(fake_repository)
+    return fake_repository
+
+@pytest.fixture
+def dependency_overrides(fake_repository):
+    def get_fake_service() -> PessoaService:
+        return PessoaService(fake_repository)
+    app.dependency_overrides[get_service] = get_fake_service
+    yield
+    app.dependency_overrides.clear()
 
 client = TestClient(app)
 
-def test_api_cadastra_pessoa_valida() -> None:
-    app.dependency_overrides[get_service] = get_fake_service
+def test_api_cadastra_pessoa_valida(dependency_overrides) -> None:
     response = client.post(
         "/pessoas",
         json={
@@ -24,8 +33,7 @@ def test_api_cadastra_pessoa_valida() -> None:
     assert response.json()["nome"] == "Lucas Benfatti"
     assert response.json()["idade"] == 18
 
-def test_api_cadastra_pessoa_com_idade_invalida() -> None:
-    app.dependency_overrides[get_service] = get_fake_service
+def test_api_cadastra_pessoa_com_idade_invalida(dependency_overrides) -> None:
     response = client.post(
         "/pessoas",
         json={
@@ -35,11 +43,7 @@ def test_api_cadastra_pessoa_com_idade_invalida() -> None:
     )
     assert response.status_code == 422
 
-def test_api_cadastra_pessoa_com_nome_duplicado() -> None:
-    fake_repository = FakeRepository()
-    def get_fake_service() -> PessoaService:
-        return PessoaService(fake_repository)
-    app.dependency_overrides[get_service] = get_fake_service
+def test_api_cadastra_pessoa_com_nome_duplicado(dependency_overrides) -> None:
     response_1 = client.post(
         "/pessoas",
         json={
